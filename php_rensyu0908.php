@@ -20,7 +20,7 @@ try{
     //echo "データベース{$dbName}に接続しました";
     echo "予約状況";
 
-    $today = date("Y/m/d");
+    $today = date("Y-m-d");
 
     //$sql1 = "SELECT id, name FROM room";
     //$sql = "SELECT *  FROM reservation";
@@ -36,7 +36,6 @@ try{
             FROM reservation, room, timezone
             WHERE reservation.room = room.id 
             AND reservation.timezone=timezone.timezone
-       
             ORDER BY reservation.date, reservation.room, 
             reservation.timezone";
 
@@ -56,14 +55,19 @@ try{
 
     echo "<tbody>";
 
-    #$date = array_shift($result);
-    #var_dump($date);
+    //$date1 = array_lice($result['date'],0,1);
+    //$date =$date1;
+    //var_dump($date);
+    //var_dump($today);
+
     foreach ($result as $row) {
-        # if($date == ($row['date'])) {
-        #    echo "<tr bgcolor='white'>";
-        #}else{
-        #    echo "<tr bgcolor='grey'>";
-        #}
+
+        if(($row['date']) >= $today) {
+            #    echo "<tr bgcolor='white'>";
+            #}else{
+            #    echo "<tr bgcolor='grey'>";
+            #}
+
             echo "<tr>";
             echo "<td>" . ($row['date']) . "</td>";
             echo "<td>" . ($row['hour']) . "</td>";
@@ -72,7 +76,8 @@ try{
             echo "<td>" . ($row['branch']) . "</td>";
             echo "<td>" . ($row['text']) . "</td>";
             echo "</tr>";
-            $date = $row['date'];
+            //$date = $row['date'];
+        }
         }
     echo "</tbody>";
     echo "</table>";
@@ -83,6 +88,7 @@ try{
     exit();
 }
 ?>
+    <a href="project_database/insertform.php">戻る</a>
 </div>
 </body>
 </html>

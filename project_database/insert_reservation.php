@@ -48,18 +48,18 @@ if (!cken($_POST)) {
     if (!isset($_POST["text"]) || ($_POST["text"] === "")) {
         $errors[] = "使用目的が入力されていません。";
     }
-
-    //エラーがあったとき
-    if (count($errors) > 0) {
-        echo '<ol class="error">';
-        foreach ($errors as $value) {
-            echo "<li>", $value, "</li>";
-        }
-        echo "</ol>";
-        echo "<hr>";
-        echo "<a href=", $gobackURL, ">戻る</a>";
-        exit();
+    //人数は任意入力にする。未入力なら1名と仮定
+    if (!isset($_POST["amount"]) || ($_POST["amount"] === "")) {
+        $amount = 1;
+    } elseif(!ctype_digit($_POST["amount"])) {
+        $errors[] = "参加人数が半角英数の整数値ではありません。";
+    } else {
+        $amount = $_POST['amount'];
     }
+
+    // --------------------
+    // DB接続
+    // --------------------
 
     // データベースユーザ
     $user = 'testuser';
@@ -90,6 +90,44 @@ if (!cken($_POST)) {
         $err = '<span class="error">エラーがありました。</span><br>';
         $err .= $e->getMessage();
         exit($err);
+    }
+
+    // --------------------
+    // 収容人数に関する処理
+    // --------------------
+    $sql4 = "SELECT * FROM room";
+    $stm = $pdo->prepare($sql4);
+    $stm->execute();
+    $room_list = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+    //参加人数<=収容人数　の会議室リスト(希望以外も含む)
+    foreach ($room_list as $row) {
+        if($row['capcity']>=$amount) {
+            $usable[$row['id']] = $row['name'];
+        }
+    }
+    //print_r($usable); //確認
+
+    //参加人数が収容人数内かどうか
+    if(isset($usable)) {
+        $reservable = array_key_exists($room, $usable);
+    } else {
+        $reservable = false;
+    }
+    if( !$reservable ) { //収容人数 NG
+        $errors[] = "参加人数が会議室の収容人数を超えています。";
+    }
+
+    //エラーがあったとき
+    if (count($errors) > 0) {
+        echo '<ol class="error">';
+        foreach ($errors as $value) {
+            echo "<li>", $value, "</li>";
+        }
+        echo "</ol>";
+        echo "<hr>";
+        echo "<a href=", $gobackURL, ">戻る</a>";
+        exit();
     }
 
     $sql1 = "SELECT * FROM reservation WHERE date=\"" . $date . "\" AND timezone=" . $timezone . " AND room=" . $room;
@@ -136,6 +174,50 @@ if (!cken($_POST)) {
         echo "氏名: " . $booking_name . "<br>";
         echo "部署: " . $branch . "<br>";
         echo "使用目的: " . $text;
+
+    } else if( count($usable)>1 ) { //希望通りに予約できないけど、同時刻のほかの会議室はどうか
+
+        unset( $usable[$room] ); //最初の希望は通らなかったので消す
+        //print_r($usable);
+
+        foreach($usable as $row1) { //会議室ごとに走査
+            $key = array_search($row1, $usable);
+            foreach ($result as $row2) { //予約すべてを走査
+
+                //日付と時間がかぶってて、かつ、使いたい会議室
+                if ($row2['date'] === $date && $row2['timezone'] === $timezone && $row2['room'] === $key ) {
+                    echo $usable[$key] .'は予約が入っています。';
+                    unset( $usable[$key] ); //その会議室を削除
+                    //print_r($usable); //確認
+                }
+            }
+        }
+
+        if(count($usable)>0) {
+            $sql3 = "SELECT * FROM timezone";
+            $stm = $pdo->prepare($sql3);
+            $stm->execute();
+            $timezone_list = $stm->fetchAll(PDO::FETCH_ASSOC);
+
+            $timezone_readable;
+            foreach($timezone_list as $timezone_item){
+                if ($timezone==$timezone_item["timezone"]){
+                    $timezone_readable = $timezone_item["hour"];
+                    break;
+                }
+            }
+
+            echo '<h3>ご希望通りの予約はできませんが、以下の会議室ならご用意できます。</h3>';
+            echo '<p>予約希望日：'. $date .'　'. $timezone_readable .'</p>';
+            echo '<ul class="roomlist">';
+            foreach ($usable as $row) {
+                echo '<li>'. $row .'</li>';
+            }
+            echo '</ul>';
+        } else {
+            echo '<h3>ご希望の時間に使用可能な会議室はありません。</h3>';
+        }
+
     } else {
         echo "<h3>すでに予約されているため、予約できません。</h3>";
 }

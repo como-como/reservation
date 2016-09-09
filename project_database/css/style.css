@@ -22,6 +22,10 @@ div {
 	margin: 2em 0;
 }
 
+input, select {
+	padding: 0.2rem;
+}
+
 ul, ol {
 	margin: 0;
 	padding: 0;

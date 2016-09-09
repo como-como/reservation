@@ -1,6 +1,9 @@
 <?php
+
 require_once("lib/util.php");
 $gobackURL = "insertform.php";
+
+session_start();
 
 // データベースユーザ
 $user = 'testuser';
@@ -53,7 +56,7 @@ try {
 <body>
 <h1>会議室予約システム</h1>
 
-<div>
+<div class="wrapper">
     <!-- 入力フォームを作る -->
     <form method="POST" action="insert_reservation.php">
         <ul>
@@ -78,6 +81,11 @@ try {
                     }
                     ?>
                 </select>
+            </li>
+            <li>
+                <label>参加人数：
+                    <input type="number" name="amount" placeholder="半角数字で記入" value="<?php if(isset($_SESSION['amount'])) ?>">
+                </label>
             </li>
             <li>
                 <label>氏名：

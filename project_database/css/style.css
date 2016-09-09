@@ -15,9 +15,16 @@ body {
 	font-size: 1rem;
 	line-height: 1.5rem;
 }
+.wrapper {
+	margin-top: 3rem;
+}
+div {
+	margin: 2em 0;
+}
 
-div{
-	margin: 1em;
+ul, ol {
+	margin: 0;
+	padding: 0;
 }
 
 li {
@@ -27,6 +34,11 @@ li {
 
 ol > li {
 	list-style-type: decimal;
+	margin-bottom: 0;
+}
+
+.roomlist li {
+	list-style-type: disc;
 	margin-bottom: 0;
 }
 

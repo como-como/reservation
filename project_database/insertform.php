@@ -104,6 +104,7 @@ try {
             <li><input type="submit" value="予約する"></li>
         </ul>
     </form>
+    <a href="php_rensyu0908.php" >予約状況を確認</a>
 </div>
 </body>
 </html>

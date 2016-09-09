@@ -1,4 +1,20 @@
 @charset "UTF-8";
+@import url(http://fonts.googleapis.com/earlyaccess/notosansjp.css);
+
+html {
+	width: 100%;
+	min-height: 100%;
+	overflow-y: scroll;
+}
+
+body {
+	margin: 0;
+	padding: 2rem 5rem;
+	color: #333;
+	font-family: 'Noto Sans JP', sans-serif;
+	font-size: 1rem;
+	line-height: 1.5rem;
+}
 
 div{
 	margin: 1em;
@@ -17,12 +33,29 @@ ol > li {
 a{
 	color: #5e78c1;
 	text-decoration: none;
+	-webkit-transition: all .25s ease-in-out;
+	-moz-transition: all .25s ease-in-out;
+	-o-transition: all .25s ease-in-out;
+	-ms-transition: all .25s ease-in-out;
+	transition: all .25s ease-in-out;
 }
 a:hover{
 	color: #b04188;
 	text-decoration: underline;
 }
-
+.a-opa img {
+	filter: alpha(opacity=60);
+	-moz-opacity: 0.6;
+	opacity: 0.6;
+}
+img {
+	border-style: none;
+	-webkit-transition: all .7s ease-in-out;
+	-moz-transition: all .7s ease-in-out;
+	-o-transition: all .7s ease-in-out;
+	-ms-transition: all .7s ease-in-out;
+	transition: all .7s ease-in-out;
+}
 .error {
 	color: #FF0000;
 }

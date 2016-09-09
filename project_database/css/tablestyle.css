@@ -12,7 +12,7 @@ thead {
 }
 
 tr *{
-	padding: : 0.5em 1em 0.5em 1em;
+	padding: 0.5em 1em 0.5em 1em;
 	width: auto;
 	text-align: left;
 }
@@ -40,4 +40,8 @@ tbody tr *:nth-child(5){
 
 tbody tr:nth-child(even) td {
 	background-color: #dff0ff;
+}
+
+tbody td {
+	white-space: nowrap;
 }
